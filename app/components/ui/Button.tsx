@@ -31,7 +31,9 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, Va
 }
 // catching all properties with ...props
 // cn allows us to alter the variance of the button in any pages
-
+// props are the properties that we pass to the button(input)
+// FC which means that it is a react function component
+// ButtonProps is just the type of the props that we pass to the button
 const Button: FC<ButtonProps> = ({className,children,variant,isLoading,size,...props}) => {
   return <button className={cn(buttonVariants({variant,size,className}))} disabled={isLoading} {...props}>
     {isLoading? <Loader2 className='mr-2 h-4 w-4 animate-spin' />:null}

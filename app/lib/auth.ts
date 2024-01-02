@@ -3,6 +3,7 @@ import { NextAuthOptions } from "next-auth";
 import { UpstashRedisAdapter } from "@next-auth/upstash-redis-adapter";
 import { db } from "./db";
 import GoogleProvider from 'next-auth/providers/google';
+import { fetchRedis } from "../helper/redis";
 
 function getGoogleCredentials() {
     const clientId = process.env.GOOGLE_CLIENT_ID;
@@ -36,15 +37,20 @@ export const authOptions: NextAuthOptions = {
     ],
     callbacks:{
         async jwt({token, user}){
-            const dbUser = (await db.get(`user:${token.id}`)) as User | null;
+            // check if user exists in Redis
+            const dbUserResult = (await fetchRedis('get', `user:${token.id}`)) as string | null;
 
-            if(!dbUser){
+
+            if(!dbUserResult){
+                // user doesn't exist, so store them in Redis
                 if(user){
                     token.id = user!.id;
                 }
                
                 return token;
             }
+            const dbUser = JSON.parse(dbUserResult) as User;
+            console.log('dbUser',dbUser);
             return{
                 id:dbUser.id,
                 name:dbUser.name,
@@ -52,6 +58,28 @@ export const authOptions: NextAuthOptions = {
                 picture:dbUser.image,
             }
         },
+        // async jwt({ token, user, account }) {
+        //     // This callback is only called on sign-in
+        //     if (user) {
+        //         // Check if user already exists in Redis
+        //         const dbUser = (await db.get(`user:${user.id}`)) as User | null;
+        
+        //         if (!dbUser) {
+        //             // User doesn't exist, so store them in Redis
+        //             const userData = {
+        //                 id: user.id,
+        //                 name: user.name,
+        //                 email: user.email,
+        //                 picture: user.image,
+        //             };
+        //             await db.set(`user:${user.id}`, JSON.stringify(userData));
+        //         }
+        
+        //         token.id = user.id;
+        //     }
+        
+        //     return token;
+        // },
         async session({session, token}){
             if(token){
                 session.user.id = token.id

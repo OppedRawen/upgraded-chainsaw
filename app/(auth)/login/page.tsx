@@ -1,7 +1,7 @@
 'use client'
 import { FC, useState } from 'react'
 import Button from '../../components/ui/Button'
-import { signIn } from 'next-auth/react'
+import { signIn, getSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 
 interface pageProps {
@@ -13,6 +13,8 @@ const page: FC<pageProps> = ({}) => {
     const [isLoading,setIsLoading] = useState<boolean>(false)
 
     async function loginWithGoogle(){
+      const session = await getSession();
+      console.log(session);
         setIsLoading(true);
         try {
        

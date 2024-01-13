@@ -1,7 +1,7 @@
 const upstashRedisRESTUrl = process.env.UPSTASH_REDIS_REST_URL
 const authToken = process.env.UPSTASH_REDIS_REST_TOKEN
 
-type Commands = 'zrange' | 'sismember' | 'get' | 'smembers'
+type Commands = 'set' | 'zrange' | 'sismember' | 'get' | 'smembers'
 
 export async function fetchRedis(
     command: Commands,
@@ -10,10 +10,15 @@ export async function fetchRedis(
     ]
 ){
     const commandUrl = `${upstashRedisRESTUrl}/${command}/${args.join('/')}`
+    console.log(`Executing Redis command: ${commandUrl}`); // Log the command
+    const method = command === 'set' ? 'POST' : 'GET';
+    const body = command === 'set' ? JSON.stringify(args) : null;
     const response = await fetch(commandUrl,{
+        method,
         headers:{
             Authorization: 'Bearer ' + authToken,
         },
+        body,
         cache:'no-cache'
     })
 

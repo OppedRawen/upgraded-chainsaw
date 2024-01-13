@@ -1,5 +1,7 @@
 'use client'
+import axios from 'axios'
 import { Check, UserPlus, X } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { FC, useState } from 'react'
 
 interface FriendrequestsProps {
@@ -9,7 +11,17 @@ interface FriendrequestsProps {
 
 const Friendrequests: FC<FriendrequestsProps> = ({incomingFriendRequests,sessionId}) => {
     // doing types in a d.ts file does not require import
-    const [friendRequests,setFriendRequests] = useState<IncomingFriendRequests[]>(incomingFriendRequests)
+    const [friendRequests,setFriendRequests] = useState<IncomingFriendRequests[]>(incomingFriendRequests);
+    const router = useRouter()
+    const acceptFriend =async(senderId:string)=>{
+        await axios.post('/api/requests/accept',{id:senderId})
+        // after accepting a friend requests, remove it from the list and refresh the page
+        // which means filter out the request that has the same senderId as the one we just accepted
+        setFriendRequests((prev)=>prev.filter((request)=>request.senderId!==senderId))
+        router.refresh();
+    }
+
+
   return <>
 
 

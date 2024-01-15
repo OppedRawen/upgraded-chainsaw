@@ -36,11 +36,11 @@ const Friendrequests: FC<FriendrequestsProps> = ({incomingFriendRequests,session
         <div key={request.senderId} className='flex gpa-4 items-center'>
             <UserPlus className='text-black'  />
             <p className='font-medium text-lg'>{request.senderEmail}</p>
-            <button aria-label="aceept friend" onClick={()=>acceptFriend} className='w-8 h-8 bg-indigo-600 hover:bg-indigo-700 grid place-items-center rounded-full transition hover:shadow-md'>
+            <button aria-label="aceept friend" onClick={()=>acceptFriend(request.senderId)} className='w-8 h-8 bg-indigo-600 hover:bg-indigo-700 grid place-items-center rounded-full transition hover:shadow-md'>
             <Check className='font-semibold text-white w-3/4 h-3/4'/>    
             </button>
 
-            <button aria-label="deny friend"onClick={()=>denyFriend}  className='w-8 h-8 bg-red-600 hover:bg-red-700 grid place-items-center rounded-full transition hover:shadow-md'>
+            <button aria-label="deny friend"onClick={()=>denyFriend(request.senderId)}  className='w-8 h-8 bg-red-600 hover:bg-red-700 grid place-items-center rounded-full transition hover:shadow-md'>
             <X className='font-semibold text-white w-3/4 h-3/4'/>    
             </button>
         </div>

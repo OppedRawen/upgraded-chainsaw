@@ -14,12 +14,19 @@ const Friendrequests: FC<FriendrequestsProps> = ({incomingFriendRequests,session
     const [friendRequests,setFriendRequests] = useState<IncomingFriendRequests[]>(incomingFriendRequests);
     const router = useRouter()
     const acceptFriend =async(senderId:string)=>{
-        await axios.post('/api/requests/accept',{id:senderId})
+        await axios.post('/api/friends/accept',{id:senderId})
         // after accepting a friend requests, remove it from the list and refresh the page
         // which means filter out the request that has the same senderId as the one we just accepted
         setFriendRequests((prev)=>prev.filter((request)=>request.senderId!==senderId))
         router.refresh();
     }
+    const denyFriend =async(senderId:string)=>{
+      await axios.post('/api/friends/deny',{id:senderId})
+      // after accepting a friend requests, remove it from the list and refresh the page
+      // which means filter out the request that has the same senderId as the one we just accepted
+      setFriendRequests((prev)=>prev.filter((request)=>request.senderId!==senderId))
+      router.refresh();
+  }
 
 
   return <>
@@ -29,11 +36,11 @@ const Friendrequests: FC<FriendrequestsProps> = ({incomingFriendRequests,session
         <div key={request.senderId} className='flex gpa-4 items-center'>
             <UserPlus className='text-black'  />
             <p className='font-medium text-lg'>{request.senderEmail}</p>
-            <button aria-label="aceept friend" className='w-8 h-8 bg-indigo-600 hover:bg-indigo-700 grid place-items-center rounded-full transition hover:shadow-md'>
+            <button aria-label="aceept friend" onClick={()=>acceptFriend} className='w-8 h-8 bg-indigo-600 hover:bg-indigo-700 grid place-items-center rounded-full transition hover:shadow-md'>
             <Check className='font-semibold text-white w-3/4 h-3/4'/>    
             </button>
 
-            <button aria-label="deny friend" className='w-8 h-8 bg-red-600 hover:bg-red-700 grid place-items-center rounded-full transition hover:shadow-md'>
+            <button aria-label="deny friend"onClick={()=>denyFriend}  className='w-8 h-8 bg-red-600 hover:bg-red-700 grid place-items-center rounded-full transition hover:shadow-md'>
             <X className='font-semibold text-white w-3/4 h-3/4'/>    
             </button>
         </div>

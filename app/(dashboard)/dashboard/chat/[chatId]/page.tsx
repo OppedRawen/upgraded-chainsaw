@@ -6,6 +6,7 @@ import { getServerSession } from 'next-auth'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { FC } from 'react'
+import Messages from '@/app/components/ui/Messages'
 
 interface pageProps {
   params:{
@@ -63,7 +64,7 @@ const page: FC<pageProps> = async ({params}) => {
       </div>
 
     </div>
-
+    <Messages / >
   </div>
 }
 

@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { FC } from 'react'
 import Messages from '@/app/components/ui/Messages'
+import ChatInput from '@/app/components/ui/ChatInput'
 
 interface pageProps {
   params:{
@@ -40,7 +41,7 @@ const page: FC<pageProps> = async ({params}) => {
   const chartPartnerId = user.id === userId1 ? userId2:userId1;
   const chatPartner = (await db.get(`user:${chartPartnerId}`)) as User;
   const initialMessages = await getChatMessages(chatId);
-  return <div className='flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]'>
+  return (<div className='flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]'>
 
     <div className='flex sm:items-center justify-between py-3 border-b-2 border-gray-200 '>
 
@@ -65,7 +66,9 @@ const page: FC<pageProps> = async ({params}) => {
 
     </div>
     <Messages  sessionId={session.user.id}initialMessages={initialMessages}/ >
+      <ChatInput chatPartner={chatPartner} />
   </div>
+  )
 }
 
 export default page

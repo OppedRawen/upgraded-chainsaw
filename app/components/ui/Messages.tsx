@@ -1,3 +1,4 @@
+"use client"
 import { cn } from '@/app/lib/utils'
 import { Message } from '@/app/lib/validations/message'
 import { FC, useRef, useState } from 'react'
@@ -25,7 +26,13 @@ const Messages: FC<MessagesProps> = ({initialMessages,sessionId}) => {
                     'bg-indigo-600 text-white':isCurrentUser,
                     'bg-gray-200 text-gray-900':!isCurrentUser,
                     'rounded-br-none':!hasNextMessageFromSameUser&&isCurrentUser,
-                   })}></span>
+                    'rounded-bl-none':!hasNextMessageFromSameUser&&!isCurrentUser,
+                   })}>
+                    {message.text}{''}
+                    <span className='ml-2 text-xs texy-gray-400'>
+                        {message.timestamp}
+                    </span>
+                   </span>
                      </div>
                 </div>
                  </div>

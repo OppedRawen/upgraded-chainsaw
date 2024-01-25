@@ -64,7 +64,7 @@ const page: FC<pageProps> = async ({params}) => {
       </div>
 
     </div>
-    <Messages / >
+    <Messages  sessionId={session.user.id}initialMessages={initialMessages}/ >
   </div>
 }
 

@@ -3,8 +3,8 @@ import { User } from 'lucide-react'
 import { init } from 'next/dist/compiled/webpack/webpack'
 import Link from 'next/link'
 import { FC, useEffect, useState } from 'react'
-import { pusherClient } from '../lib/pusher'
-import { toPusherKey } from '../lib/utils'
+import { pusherClient } from '../../lib/pusher'
+import { toPusherKey } from '../../lib/utils'
 
 interface FriendRequestSidebarOptionProps {
     sessionId:string,

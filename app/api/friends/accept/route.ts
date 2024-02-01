@@ -3,6 +3,8 @@
 import { fetchRedis } from "@/app/helper/redis";
 import { authOptions } from "@/app/lib/auth";
 import { db } from "@/app/lib/db";
+import { pusherServer } from "@/app/lib/pusher";
+import { toPusherKey } from "@/app/lib/utils";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
 
@@ -27,6 +29,9 @@ try {
     if(!hasFriendRequest){
         return new Response(`No friend request`, {status:400});
     }
+
+    //notify added user
+    pusherServer.trigger(toPusherKey(`user:${idToAdd}:friends`),'new_friend',{})
     // post request in redis is not a caching behavior
     await db.sadd(`user:${session.user.id}:friends`,idToAdd)
 

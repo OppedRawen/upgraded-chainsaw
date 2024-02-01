@@ -4,6 +4,9 @@ import { charHrefConstructor, toPusherKey } from '@/app/lib/utils';
 import { usePathname,useRouter } from 'next/navigation';
 
 import { FC, useEffect, useState } from 'react'
+import toast from 'react-hot-toast';
+import UnseenChatToast from './UnseenChatToast';
+import { measureMemory } from 'vm';
 
 interface SidebarChatListProps {
     friends:User[]
@@ -34,7 +37,15 @@ const SidebarChatList: FC<SidebarChatListProps> = ({friends,sessionId}) => {
             router.refresh();
         }
         const chatHandler=(message:ExtendedMessage)=>{
-            console.log("new chat message",message);
+            const shouldNotify = pathname!==`/dashboard/chat/${charHrefConstructor(sessionId,message.senderId)}`;
+
+            if(!shouldNotify) return;
+            //should be notified
+
+            toast.custom((t)=>(
+                <UnseenChatToast t={t} sessionId={sessionId} senderId={message.senderId} senderImg={message.senderImg} senderMessage={message.text} senderName={message.senderName}/>
+            ))
+            setUnseenMessages((prev)=>[...prev,message])
         }
         pusherClient.bind('new_message',chatHandler)
         pusherClient.bind('new_friend',newFriendHandler)

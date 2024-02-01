@@ -1,16 +1,16 @@
 import { getServerSession } from 'next-auth'
 import { FC, ReactNode } from 'react'
-import { authOptions } from '../lib/auth'
+import { authOptions } from '../../lib/auth'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { Icon, Icons } from '../components/ui/Icons'
+import { Icon, Icons } from '../../components/ui/Icons'
 import Image from 'next/image'
 import { Sign } from 'crypto'
-import SignOutButton from '../components/ui/SignOutButton'
-import FriendRequestSidebarOption from '../components/FriendRequestSidebarOption'
-import { fetchRedis } from '../helper/redis'
-import SidebarChatList from '../components/ui/SidebarChatList'
-import { getFriendsByuserId } from '../helper/get-friends-by-user-id'
+import SignOutButton from '../../components/ui/SignOutButton'
+import FriendRequestSidebarOption from '../../components/FriendRequestSidebarOption'
+import { fetchRedis } from '../../helper/redis'
+import SidebarChatList from '../../components/ui/SidebarChatList'
+import { getFriendsByuserId } from '../../helper/get-friends-by-user-id'
 
 interface layoutProps {
   children:ReactNode

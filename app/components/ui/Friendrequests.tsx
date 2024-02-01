@@ -31,7 +31,7 @@ const Friendrequests: FC<FriendrequestsProps> = ({incomingFriendRequests,session
         pusherClient.unbind('incoming_friend_requests',friendRequestHandler)
 
       }
-    },[])
+    },[sessionId])
     const acceptFriend =async(senderId:string)=>{
         await axios.post('/api/friends/accept',{id:senderId})
         // after accepting a friend requests, remove it from the list and refresh the page

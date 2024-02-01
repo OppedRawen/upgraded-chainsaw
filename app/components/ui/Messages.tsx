@@ -32,7 +32,7 @@ const Messages: FC<MessagesProps> = ({initialMessages,sessionId, sessionImg,chat
         pusherClient.unbind('incoming-message',messageHandler)
 
       }
-    },[])
+    },[chatId])
     const scrollDownRef = useRef<HTMLDivElement|null>(null)
 
     const formatTimeStamp=(timestamp:number)=>{

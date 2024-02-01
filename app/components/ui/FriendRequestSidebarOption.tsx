@@ -32,7 +32,9 @@ const FriendRequestSidebarOption: FC<FriendRequestSidebarOptionProps> = ({sessio
       pusherClient.bind('new_friend',addedFriendHandler)
       return ()=>{
         pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:incoming_friend_requests`))
+        pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:friends`));
         pusherClient.unbind('incoming_friend_requests',friendRequestHandler)
+        pusherClient.unbind('new_friend',addedFriendHandler)
 
       }
     },[sessionId])

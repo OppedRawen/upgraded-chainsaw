@@ -19,13 +19,6 @@ interface ExtendedMessage extends Message{
 const SidebarChatList: FC<SidebarChatListProps> = ({friends,sessionId}) => {
     const router = useRouter();
     const pathname = usePathname();
-    useEffect(()=>{
-        if(pathname?.includes('chat')){
-            setUnseenMessages((prev)=>{
-                return prev.filter((msg)=>!pathname.includes(msg.senderId))
-            })
-        }
-    },[pathname])
 
     const [unseenMessages,setUnseenMessages] = useState<Message[]>([]);
 
@@ -53,8 +46,19 @@ const SidebarChatList: FC<SidebarChatListProps> = ({friends,sessionId}) => {
         return()=>{
             pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:chats`))
             pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:friends`))
+            
+            pusherClient.unbind('new_message', chatHandler)
+            pusherClient.unbind('new_friend', newFriendHandler)
         }
-    },[])
+    },[pathname,sessionId,router])
+
+    useEffect(()=>{
+        if(pathname?.includes('chat')){
+            setUnseenMessages((prev)=>{
+                return prev.filter((msg)=>!pathname.includes(msg.senderId))
+            })
+        }
+    },[pathname])
   return (
   <ul role='list' className='max-h-[25rem] overflow-y-auto -mx-2 space-y-1 '>
     {friends.sort().map((friend)=>{

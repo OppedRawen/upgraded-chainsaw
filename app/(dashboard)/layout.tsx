@@ -25,7 +25,7 @@ const sidebarOptions: SidebarOption[] =[
   {
     id:1,
     name:'Add Friend',
-    href:'./dashboard/add',
+    href:'/dashboard/add',
     Icon: 'UserPlus'
   }
 ]

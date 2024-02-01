@@ -1,5 +1,6 @@
 "use client"
-import { charHrefConstructor } from '@/app/lib/utils';
+import { pusherClient } from '@/app/lib/pusher';
+import { charHrefConstructor, toPusherKey } from '@/app/lib/utils';
 import { usePathname,useRouter } from 'next/navigation';
 
 import { FC, useEffect, useState } from 'react'
@@ -8,7 +9,10 @@ interface SidebarChatListProps {
     friends:User[]
     sessionId:string
 }
-
+interface ExtendedMessage extends Message{
+    senderImg:string
+    senderName:string
+}
 const SidebarChatList: FC<SidebarChatListProps> = ({friends,sessionId}) => {
     const router = useRouter();
     const pathname = usePathname();
@@ -22,6 +26,24 @@ const SidebarChatList: FC<SidebarChatListProps> = ({friends,sessionId}) => {
 
     const [unseenMessages,setUnseenMessages] = useState<Message[]>([]);
 
+    useEffect(()=>{
+        pusherClient.subscribe(toPusherKey(`user:${sessionId}:chats`))
+        pusherClient.subscribe(toPusherKey(`user:${sessionId}:friends`))
+
+        const newFriendHandler=()=>{
+            router.refresh();
+        }
+        const chatHandler=(message:ExtendedMessage)=>{
+            console.log("new chat message",message);
+        }
+        pusherClient.bind('new_message',chatHandler)
+        pusherClient.bind('new_friend',newFriendHandler)
+
+        return()=>{
+            pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:chats`))
+            pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:friends`))
+        }
+    },[])
   return (
   <ul role='list' className='max-h-[25rem] overflow-y-auto -mx-2 space-y-1 '>
     {friends.sort().map((friend)=>{

@@ -1,6 +1,8 @@
 import { fetchRedis } from "@/app/helper/redis";
 import { authOptions } from "@/app/lib/auth";
 import { db } from "@/app/lib/db";
+import { pusherServer } from "@/app/lib/pusher";
+import { toPusherKey } from "@/app/lib/utils";
 import { messageValidator } from "@/app/lib/validations/message";
 import { nanoid } from "nanoid";
 import { getServerSession } from "next-auth";
@@ -21,7 +23,7 @@ export async function POST(req:Request){
         if(!isFriend) return new Response('Unauthorized',{status:401});
 
         const sender = await fetchRedis('get',`user:${session.user.id}`) as string;
-        const parsedSender = JSON.parse(sender);
+        const parsedSender = JSON.parse(sender) as User;
         const timestamp = Date.now();
         const messageData: Message = {
             id: nanoid(),
@@ -31,6 +33,15 @@ export async function POST(req:Request){
           }
       
         const message = messageValidator.parse(messageData);
+
+        //   notify all connect chat room clients
+        pusherServer.trigger(toPusherKey(`chat:${chatId}`), 'incoming-message', message)
+
+        pusherServer.trigger(toPusherKey(`user:${friendId}:chats`),'new_message',{
+            ...message,
+            senderImg:parsedSender.image,
+            senderName:parsedSender.name,
+        })
         // all valid send the message
         await db.zadd(`chat:${chatId}:messages`,{
             score:timestamp,
